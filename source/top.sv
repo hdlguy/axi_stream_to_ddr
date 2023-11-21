@@ -17,6 +17,7 @@ module top(
     logic [71:0]    S_AXIS_S2MM_CMD_tdata;
     logic           S_AXIS_S2MM_CMD_tready;
     logic           S_AXIS_S2MM_CMD_tvalid;
+    logic           s2mm_err;
     
     logic [31:0]    S_AXIS_S2MM_tdata;
     logic [3:0]     S_AXIS_S2MM_tkeep;
@@ -47,6 +48,7 @@ module top(
         .S_AXIS_S2MM_CMD_tdata  (S_AXIS_S2MM_CMD_tdata),
         .S_AXIS_S2MM_CMD_tready (S_AXIS_S2MM_CMD_tready),
         .S_AXIS_S2MM_CMD_tvalid (S_AXIS_S2MM_CMD_tvalid),
+        .s2mm_err(s2mm_err),
         // mover stream in
         .S_AXIS_S2MM_tdata      (S_AXIS_S2MM_tdata),
         .S_AXIS_S2MM_tkeep      (S_AXIS_S2MM_tkeep),
@@ -68,11 +70,11 @@ module top(
     
     // system reset
     logic[15:0] reset_pipe = -1;
-    always_ff @(posedge clk) reset_pipe <= {reset_pipe[14:0], 0};
-    assign reset_n = reset_pipe[7];
+    always_ff @(posedge clk) reset_pipe <= {reset_pipe[14:0], 1'b0};
     logic reset;
-    assign reset = ~reset_n;
-    assign m_axis_s2mm_cmdsts_aresetn = reset_pipe[15];
+    assign reset = reset_pipe[7];
+    assign reset_n = ~reset;
+    assign m_axis_s2mm_cmdsts_aresetn = ~reset_pipe[15];
 
     
     // data generator for write
@@ -85,14 +87,13 @@ module top(
     end
     assign S_AXIS_S2MM_tdata = wdata;
     assign S_AXIS_S2MM_tkeep = 4'b1111;
-    always_comb begin
-        if (wdata[7:0] == 0) S_AXIS_S2MM_tlast = 1; else S_AXIS_S2MM_tlast = 0;
-    end
+    assign S_AXIS_S2MM_tlast = 0;
+    //always_comb if (wdata[3:0] == 0) S_AXIS_S2MM_tlast = 1; else S_AXIS_S2MM_tlast = 0;
     
     
     
     // command interface
-    localparam logic[22:0] s2mm_btt = 23'd16384;
+    localparam logic[22:0] s2mm_btt = 23'd8192;
     localparam logic s2mm_type = 1'b1;
     localparam logic[31:0] s2mm_start = 32'h0000_0000;
     localparam logic[3:0] s2mm_tag = 4'hA;
@@ -108,7 +109,10 @@ module top(
         end
     end
     
-    top_ila ila_inst (.clk(clk), .probe0({bram0_en, bram0_rst, bram0_we, bram0_addr[13:0], bram_din})); // 52
+    // status interface
+    assign M_AXIS_S2MM_STS_tready = 1;
+    
+    top_ila ila_inst (.clk(clk), .probe0({bram0_en, bram0_rst, bram0_we, bram0_addr[13:0], bram0_din})); // 52
     
         
 endmodule
