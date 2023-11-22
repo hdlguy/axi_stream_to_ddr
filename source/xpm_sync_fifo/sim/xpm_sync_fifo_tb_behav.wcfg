@@ -5,21 +5,22 @@
    <db_ref_list>
       <db_ref path="xpm_sync_fifo_tb_behav.wdb" id="1">
          <top_modules>
+            <top_module name="\$unit_xpm_cdc_sv_220102727 " />
             <top_module name="glbl" />
             <top_module name="xpm_sync_fifo_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="3,000.000 ns"></ZoomEndTime>
-      <Cursor1Time time="0.000 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="1,601.000001 us"></ZoomEndTime>
+      <Cursor1Time time="0.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="364"></NameColumnWidth>
-      <ValueColumnWidth column_width="127"></ValueColumnWidth>
+      <ValueColumnWidth column_width="122"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="65" />
+   <WVObjectSize size="63" />
    <wvobject type="logic" fp_name="/xpm_sync_fifo_tb/reset">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
@@ -56,22 +57,10 @@
       <obj_property name="CustomSignalColor">#FFA500</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/xpm_sync_fifo_tb/ref_empty">
-      <obj_property name="ElementShortName">ref_empty</obj_property>
-      <obj_property name="ObjectShortName">ref_empty</obj_property>
-      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/xpm_sync_fifo_tb/dout">
       <obj_property name="ElementShortName">dout[15:0]</obj_property>
       <obj_property name="ObjectShortName">dout[15:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFA500</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/xpm_sync_fifo_tb/ref_dout">
-      <obj_property name="ElementShortName">ref_dout[15:0]</obj_property>
-      <obj_property name="ObjectShortName">ref_dout[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="divider12" type="divider">

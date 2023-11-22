@@ -19,7 +19,7 @@ module top(
     logic           S_AXIS_S2MM_CMD_tvalid;
     logic           s2mm_err;
     
-    logic [31:0]    S_AXIS_S2MM_tdata;
+    logic [63:0]    S_AXIS_S2MM_tdata;
     logic [3:0]     S_AXIS_S2MM_tkeep;
     logic           S_AXIS_S2MM_tlast;
     logic           S_AXIS_S2MM_tready;
@@ -78,22 +78,34 @@ module top(
     assign m_axis_s2mm_cmdsts_aresetn = ~reset_pipe[15];
 
     
-    // data generator for write
-    assign S_AXIS_S2MM_tvalid = 1;
-    logic[31:0] wdata = 0;
+    // data generator for write memory
+    // the adc will produce data once per seven cycles
+    logic data_fifo_empty, data_fifo_wr, data_fifo_full;
+    logic[63:0] wdata = -1;
+    logic[2:0] fifo_wr_count=6;
     always_ff @(posedge clk) begin
-        if ( (S_AXIS_S2MM_tready) & (S_AXIS_S2MM_tvalid)) begin
+        fifo_wr_count <= fifo_wr_count - 1;
+        if (fifo_wr_count == 0) begin
+            data_fifo_wr <= 1;
             wdata <= wdata + 1;
+        end else begin
+            data_fifo_wr <= 0;
         end
     end
-    assign S_AXIS_S2MM_tdata = wdata;
     assign S_AXIS_S2MM_tkeep = 4'b1111;
     assign S_AXIS_S2MM_tlast = 0;
+
+    // buffer the write data in a fifo
+    xpm_sync_fifo #(.W(64), .D(512)) data_fifo_inst (
+        .clk(clk), .srst(1'b0), .din(wdata), .wr_en(data_fifo_wr), .full(data_fifo_full),
+        .rd_en(S_AXIS_S2MM_tready), .dout(S_AXIS_S2MM_tdata), .empty(data_fifo_empty)
+    );
+    assign S_AXIS_S2MM_tvalid = ~data_fifo_empty;
     
     
     
     // command interface
-    localparam logic[22:0] s2mm_btt = 23'h4_0000;
+    localparam logic[22:0] s2mm_btt = 23'h00_1000;
     localparam logic s2mm_type = 1'b1;
     localparam logic[3:0] s2mm_tag = 4'hA;
     
@@ -120,3 +132,20 @@ module top(
     
         
 endmodule
+
+/*
+module xpm_sync_fifo #(
+    parameter int W = 16,   // width
+    parameter int D = 64   // depth
+) (
+    input   logic           clk,
+    input   logic           srst,
+    input   logic[W-1:0]    din,
+    input   logic           wr_en,
+    output  logic           full,
+        
+    input   logic           rd_en,
+    output  logic[W-1:0]    dout,
+    output  logic           empty
+);
+*/

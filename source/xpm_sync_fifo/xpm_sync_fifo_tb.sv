@@ -19,7 +19,7 @@ module xpm_sync_fifo_tb ();
 
     xpm_sync_fifo #(.W(W), .D(D)) uut (.*);
     
-    xpm_ref_fifo ref_fifo (.clk(clk), .srst(srst), .din(din), .wr_en(wr_en), .rd_en(rd_en), .dout(ref_dout), .full(ref_full), .empty(ref_empty));
+    //xpm_ref_fifo ref_fifo (.clk(clk), .srst(srst), .din(din), .wr_en(wr_en), .rd_en(rd_en), .dout(ref_dout), .full(ref_full), .empty(ref_empty));
 
     
     logic[15:0] read_rand=0, write_rand=0;

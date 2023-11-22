@@ -5,6 +5,7 @@
    <db_ref_list>
       <db_ref path="top_tb_behav.wdb" id="1">
          <top_modules>
+            <top_module name="\$unit_xpm_cdc_sv_220102727 " />
             <top_module name="axi_bram_ctrl_funcs" />
             <top_module name="glbl" />
             <top_module name="lib_pkg" />
@@ -15,14 +16,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="4,681.000000 us"></ZoomEndTime>
+      <ZoomEndTime time="401.000001 us"></ZoomEndTime>
       <Cursor1Time time="0.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="373"></NameColumnWidth>
-      <ValueColumnWidth column_width="350"></ValueColumnWidth>
+      <ValueColumnWidth column_width="345"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="41" />
+   <WVObjectSize size="44" />
    <wvobject type="logic" fp_name="/top_tb/clkin">
       <obj_property name="ElementShortName">clkin</obj_property>
       <obj_property name="ObjectShortName">clkin</obj_property>
@@ -73,6 +74,22 @@
       <obj_property name="ElementShortName">s2mm_err</obj_property>
       <obj_property name="ObjectShortName">s2mm_err</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/data_fifo_empty">
+      <obj_property name="ElementShortName">data_fifo_empty</obj_property>
+      <obj_property name="ObjectShortName">data_fifo_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/data_fifo_wr">
+      <obj_property name="ElementShortName">data_fifo_wr</obj_property>
+      <obj_property name="ObjectShortName">data_fifo_wr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/data_fifo_full">
+      <obj_property name="ElementShortName">data_fifo_full</obj_property>
+      <obj_property name="ObjectShortName">data_fifo_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/wdata">
+      <obj_property name="ElementShortName">wdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">wdata[63:0]</obj_property>
+   </wvobject>
    <wvobject type="logic" fp_name="/top_tb/uut/S_AXIS_S2MM_tvalid">
       <obj_property name="ElementShortName">S_AXIS_S2MM_tvalid</obj_property>
       <obj_property name="ObjectShortName">S_AXIS_S2MM_tvalid</obj_property>
@@ -86,8 +103,8 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/S_AXIS_S2MM_tdata">
-      <obj_property name="ElementShortName">S_AXIS_S2MM_tdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">S_AXIS_S2MM_tdata[31:0]</obj_property>
+      <obj_property name="ElementShortName">S_AXIS_S2MM_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXIS_S2MM_tdata[63:0]</obj_property>
       <obj_property name="CustomSignalColor">#FF00FF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -162,10 +179,6 @@
       <obj_property name="ElementShortName">bram0_rst</obj_property>
       <obj_property name="ObjectShortName">bram0_rst</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/uut/wdata">
-      <obj_property name="ElementShortName">wdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">wdata[31:0]</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/s2mm_btt">
       <obj_property name="ElementShortName">s2mm_btt[22:0]</obj_property>
       <obj_property name="ObjectShortName">s2mm_btt[22:0]</obj_property>
@@ -210,8 +223,8 @@
       <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WVALID</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_WDATA">
-      <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_WDATA[31:0]</obj_property>
-      <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WDATA[31:0]</obj_property>
+      <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_WDATA[63:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WDATA[63:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/system_i/bram0_addr">
       <obj_property name="ElementShortName">bram0_addr[27:0]</obj_property>
