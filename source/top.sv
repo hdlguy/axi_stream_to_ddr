@@ -36,27 +36,32 @@ module top(
 
     // IPI Block Diagram, contains datamover and axi bram controller
     system system_i (
+        //
         .clk(clk),
         .reset_n(reset_n),
-        // mover status
+        //
+        // s2mm status
         .m_axis_s2mm_cmdsts_aresetn(m_axis_s2mm_cmdsts_aresetn),
         .M_AXIS_S2MM_STS_tdata  (M_AXIS_S2MM_STS_tdata),
         .M_AXIS_S2MM_STS_tkeep  (M_AXIS_S2MM_STS_tkeep),
         .M_AXIS_S2MM_STS_tlast  (M_AXIS_S2MM_STS_tlast),
         .M_AXIS_S2MM_STS_tready (M_AXIS_S2MM_STS_tready),
         .M_AXIS_S2MM_STS_tvalid (M_AXIS_S2MM_STS_tvalid),
-        // mover command
+        //
+        // s2mm command
         .S_AXIS_S2MM_CMD_tdata  (S_AXIS_S2MM_CMD_tdata),
         .S_AXIS_S2MM_CMD_tready (S_AXIS_S2MM_CMD_tready),
         .S_AXIS_S2MM_CMD_tvalid (S_AXIS_S2MM_CMD_tvalid),
         .s2mm_err(s2mm_err),
-        // mover stream in
+        //
+        // s2mm stream in
         .S_AXIS_S2MM_tdata      (S_AXIS_S2MM_tdata),
         .S_AXIS_S2MM_tkeep      (S_AXIS_S2MM_tkeep),
         .S_AXIS_S2MM_tlast      (S_AXIS_S2MM_tlast),
         .S_AXIS_S2MM_tready     (S_AXIS_S2MM_tready),
         .S_AXIS_S2MM_tvalid     (S_AXIS_S2MM_tvalid),
         //
+        // bram control
         .bram0_addr             (bram0_addr),
         .bram0_clk              (bram0_clk),
         .bram0_din              (bram0_din),
@@ -66,7 +71,7 @@ module top(
         .bram0_we               (bram0_we)
     );
     
-    //test_bram bram_inst (.clka(bram0_clk), .rsta(bram0_rst), .ena(bram0_en), .wea(bram0_we), .addra(bram0_addr[13:2]), .dina(bram0_din), .douta(bram0_dout), .rsta_busy());
+    test_bram bram_inst (.clka(bram0_clk), .rsta(bram0_rst), .ena(bram0_en), .wea(bram0_we), .addra(bram0_addr[13:2]), .dina(bram0_din), .douta(bram0_dout), .rsta_busy());
 
     
     // system reset
@@ -76,6 +81,7 @@ module top(
     assign reset = reset_pipe[7];
     assign reset_n = ~reset;
     assign m_axis_s2mm_cmdsts_aresetn = ~reset_pipe[15];
+    
 
     
     // data generator for write memory
@@ -104,6 +110,7 @@ module top(
     
     
     
+    
     // command interface
     localparam logic[22:0] s2mm_btt = 23'h00_1000;
     localparam logic s2mm_type = 1'b1;
@@ -125,8 +132,13 @@ module top(
         end
     end
     
+    
     // status interface
     assign M_AXIS_S2MM_STS_tready = 1;
+    
+    
+    
+    
     
     top_ila ila_inst (.clk(clk), .probe0({M_AXIS_S2MM_STS_tready, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
     
@@ -134,18 +146,4 @@ module top(
 endmodule
 
 /*
-module xpm_sync_fifo #(
-    parameter int W = 16,   // width
-    parameter int D = 64   // depth
-) (
-    input   logic           clk,
-    input   logic           srst,
-    input   logic[W-1:0]    din,
-    input   logic           wr_en,
-    output  logic           full,
-        
-    input   logic           rd_en,
-    output  logic[W-1:0]    dout,
-    output  logic           empty
-);
 */
