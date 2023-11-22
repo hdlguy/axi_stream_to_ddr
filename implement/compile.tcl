@@ -15,12 +15,12 @@ launch_runs impl_1 -to_step write_bitstream -jobs 8
 wait_on_run impl_1
 
 open_run impl_1
-write_debug_probes   -force             ./results/top.ltx
-write_hw_platform -fixed -force -file   ./results/top.xsa
-write_mem_info      -force              ./results/top.mmi
 report_timing_summary   -file           ./results/timing.rpt
 report_utilization      -file           ./results/utilization.rpt
 report_io               -file           ./results/io.rpt
+write_debug_probes   -force             ./results/top.ltx
+#write_hw_platform -fixed -force -file   ./results/top.xsa
+#write_mem_info      -force              ./results/top.mmi
 
 set_property CFGBVS VCCO [current_design]
 set_property CONFIG_VOLTAGE 2.5 [current_design]

@@ -5,7 +5,6 @@
    <db_ref_list>
       <db_ref path="top_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="\$unit_xpm_cdc_sv_220102727 " />
             <top_module name="axi_bram_ctrl_funcs" />
             <top_module name="glbl" />
             <top_module name="lib_pkg" />
@@ -15,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="2,927.723 ns"></ZoomEndTime>
-      <Cursor1Time time="0.000 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="4,681.000000 us"></ZoomEndTime>
+      <Cursor1Time time="0.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="373"></NameColumnWidth>
-      <ValueColumnWidth column_width="365"></ValueColumnWidth>
+      <ValueColumnWidth column_width="350"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="40" />
+   <WVObjectSize size="41" />
    <wvobject type="logic" fp_name="/top_tb/clkin">
       <obj_property name="ElementShortName">clkin</obj_property>
       <obj_property name="ObjectShortName">clkin</obj_property>
@@ -135,8 +134,8 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/bram0_addr">
-      <obj_property name="ElementShortName">bram0_addr[13:0]</obj_property>
-      <obj_property name="ObjectShortName">bram0_addr[13:0]</obj_property>
+      <obj_property name="ElementShortName">bram0_addr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">bram0_addr[27:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/bram0_we">
       <obj_property name="ElementShortName">bram0_we[3:0]</obj_property>
@@ -179,10 +178,12 @@
    <wvobject type="array" fp_name="/top_tb/uut/s2mm_start">
       <obj_property name="ElementShortName">s2mm_start[31:0]</obj_property>
       <obj_property name="ObjectShortName">s2mm_start[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/uut/s2mm_tag">
-      <obj_property name="ElementShortName">s2mm_tag[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s2mm_tag[3:0]</obj_property>
+   <wvobject type="array" fp_name="/top_tb/uut/s2mm_btt">
+      <obj_property name="ElementShortName">s2mm_btt[22:0]</obj_property>
+      <obj_property name="ObjectShortName">s2mm_btt[22:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="divider57" type="divider">
       <obj_property name="label">system</obj_property>
@@ -211,5 +212,9 @@
    <wvobject type="array" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_WDATA">
       <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_WDATA[31:0]</obj_property>
       <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/system_i/bram0_addr">
+      <obj_property name="ElementShortName">bram0_addr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">bram0_addr[27:0]</obj_property>
    </wvobject>
 </wave_config>
