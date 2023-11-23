@@ -131,6 +131,7 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_datamover:5.1\
 xilinx.com:ip:axi_bram_ctrl:4.1\
+xilinx.com:ip:system_ila:1.1\
 "
 
    set list_ips_missing ""
@@ -228,11 +229,28 @@ proc create_root_design { parentCell } {
    CONFIG.READ_WRITE_MODE {READ_WRITE} \
    ] $bram0
 
+  set M_AXIS_MM2S_STS [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M_AXIS_MM2S_STS ]
+
+  set M_AXIS_MM2S [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M_AXIS_MM2S ]
+
+  set S_AXIS_MM2S_CMD [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS_MM2S_CMD ]
+  set_property -dict [ list \
+   CONFIG.HAS_TKEEP {0} \
+   CONFIG.HAS_TLAST {0} \
+   CONFIG.HAS_TREADY {1} \
+   CONFIG.HAS_TSTRB {0} \
+   CONFIG.LAYERED_METADATA {undef} \
+   CONFIG.TDATA_NUM_BYTES {9} \
+   CONFIG.TDEST_WIDTH {0} \
+   CONFIG.TID_WIDTH {0} \
+   CONFIG.TUSER_WIDTH {0} \
+   ] $S_AXIS_MM2S_CMD
+
 
   # Create ports
   set clk [ create_bd_port -dir I -type clk -freq_hz 100000000 clk ]
   set_property -dict [ list \
-   CONFIG.ASSOCIATED_RESET {reset_N:m_axis_s2mm_cmdsts_aresetn} \
+   CONFIG.ASSOCIATED_RESET {reset_N:m_axis_s2mm_cmdsts_aresetn:m_axis_mm2s_cmdsts_aresetn} \
  ] $clk
   set reset_n [ create_bd_port -dir I -type rst reset_n ]
   set_property -dict [ list \
@@ -240,13 +258,20 @@ proc create_root_design { parentCell } {
  ] $reset_n
   set m_axis_s2mm_cmdsts_aresetn [ create_bd_port -dir I -type rst m_axis_s2mm_cmdsts_aresetn ]
   set s2mm_err [ create_bd_port -dir O s2mm_err ]
+  set m_axis_mm2s_cmdsts_aresetn [ create_bd_port -dir I -type rst m_axis_mm2s_cmdsts_aresetn ]
+  set mm2s_err [ create_bd_port -dir O mm2s_err ]
 
   # Create instance: axi_datamover_0, and set properties
   set axi_datamover_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_datamover:5.1 axi_datamover_0 ]
   set_property -dict [list \
     CONFIG.c_dummy {1} \
-    CONFIG.c_enable_mm2s {0} \
+    CONFIG.c_enable_mm2s {1} \
+    CONFIG.c_m_axi_mm2s_data_width {64} \
     CONFIG.c_m_axi_s2mm_data_width {64} \
+    CONFIG.c_m_axis_mm2s_tdata_width {64} \
+    CONFIG.c_mm2s_btt_used {23} \
+    CONFIG.c_mm2s_burst_size {16} \
+    CONFIG.c_mm2s_include_sf {true} \
     CONFIG.c_s2mm_btt_used {23} \
     CONFIG.c_s_axis_s2mm_tdata_width {64} \
   ] $axi_datamover_0
@@ -262,25 +287,49 @@ proc create_root_design { parentCell } {
 
   # Create instance: axi_interconnect_0, and set properties
   set axi_interconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_0 ]
-  set_property CONFIG.NUM_MI {1} $axi_interconnect_0
+  set_property -dict [list \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {2} \
+  ] $axi_interconnect_0
+
+
+  # Create instance: system_ila_0, and set properties
+  set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
+  set_property -dict [list \
+    CONFIG.C_ADV_TRIGGER {true} \
+    CONFIG.C_DATA_DEPTH {2048} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.C_INPUT_PIPE_STAGES {2} \
+    CONFIG.C_MON_TYPE {MIX} \
+    CONFIG.C_NUM_MONITOR_SLOTS {1} \
+    CONFIG.C_NUM_OF_PROBES {2} \
+  ] $system_ila_0
 
 
   # Create interface connections
+  connect_bd_intf_net -intf_net S_AXIS_MM2S_CMD_0_1 [get_bd_intf_ports S_AXIS_MM2S_CMD] [get_bd_intf_pins axi_datamover_0/S_AXIS_MM2S_CMD]
   connect_bd_intf_net -intf_net S_AXIS_S2MM_0_1 [get_bd_intf_ports S_AXIS_S2MM] [get_bd_intf_pins axi_datamover_0/S_AXIS_S2MM]
   connect_bd_intf_net -intf_net S_AXIS_S2MM_CMD_0_1 [get_bd_intf_ports S_AXIS_S2MM_CMD] [get_bd_intf_pins axi_datamover_0/S_AXIS_S2MM_CMD]
   connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_ports bram0] [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA]
+  connect_bd_intf_net -intf_net axi_datamover_0_M_AXIS_MM2S [get_bd_intf_ports M_AXIS_MM2S] [get_bd_intf_pins axi_datamover_0/M_AXIS_MM2S]
+  connect_bd_intf_net -intf_net axi_datamover_0_M_AXIS_MM2S_STS [get_bd_intf_ports M_AXIS_MM2S_STS] [get_bd_intf_pins axi_datamover_0/M_AXIS_MM2S_STS]
   connect_bd_intf_net -intf_net axi_datamover_0_M_AXIS_S2MM_STS [get_bd_intf_ports M_AXIS_S2MM_STS] [get_bd_intf_pins axi_datamover_0/M_AXIS_S2MM_STS]
+  connect_bd_intf_net -intf_net axi_datamover_0_M_AXI_MM2S [get_bd_intf_pins axi_datamover_0/M_AXI_MM2S] [get_bd_intf_pins axi_interconnect_0/S01_AXI]
   connect_bd_intf_net -intf_net axi_datamover_0_M_AXI_S2MM [get_bd_intf_pins axi_datamover_0/M_AXI_S2MM] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
+connect_bd_intf_net -intf_net [get_bd_intf_nets axi_interconnect_0_M00_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins system_ila_0/SLOT_0_AXI]
 
   # Create port connections
-  connect_bd_net -net axi_datamover_0_s2mm_err [get_bd_pins axi_datamover_0/s2mm_err] [get_bd_ports s2mm_err]
-  connect_bd_net -net clk_wiz_clk_out1 [get_bd_ports clk] [get_bd_pins axi_datamover_0/m_axi_s2mm_aclk] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_awclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK]
+  connect_bd_net -net axi_datamover_0_mm2s_err [get_bd_pins axi_datamover_0/mm2s_err] [get_bd_ports mm2s_err] [get_bd_pins system_ila_0/probe0]
+  connect_bd_net -net axi_datamover_0_s2mm_err [get_bd_pins axi_datamover_0/s2mm_err] [get_bd_ports s2mm_err] [get_bd_pins system_ila_0/probe1]
+  connect_bd_net -net clk_wiz_clk_out1 [get_bd_ports clk] [get_bd_pins axi_datamover_0/m_axi_s2mm_aclk] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_awclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aclk] [get_bd_pins axi_datamover_0/m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/S01_ACLK] [get_bd_pins system_ila_0/clk]
+  connect_bd_net -net m_axis_mm2s_cmdsts_aresetn_0_1 [get_bd_ports m_axis_mm2s_cmdsts_aresetn] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aresetn]
   connect_bd_net -net m_axis_s2mm_cmdsts_aresetn_0_1 [get_bd_ports m_axis_s2mm_cmdsts_aresetn] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_aresetn]
-  connect_bd_net -net rst_clk_wiz_100M_peripheral_aresetn [get_bd_ports reset_n] [get_bd_pins axi_datamover_0/m_axi_s2mm_aresetn] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN]
+  connect_bd_net -net rst_clk_wiz_100M_peripheral_aresetn [get_bd_ports reset_n] [get_bd_pins axi_datamover_0/m_axi_s2mm_aresetn] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins axi_datamover_0/m_axi_mm2s_aresetn] [get_bd_pins axi_interconnect_0/S01_ARESETN] [get_bd_pins system_ila_0/resetn]
 
   # Create address segments
-  assign_bd_address -offset 0x00000000 -range 0x10000000 -target_address_space [get_bd_addr_spaces axi_datamover_0/Data_S2MM] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x00000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces axi_datamover_0/Data_MM2S] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x00000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces axi_datamover_0/Data_S2MM] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
 
 
   # Restore current instance

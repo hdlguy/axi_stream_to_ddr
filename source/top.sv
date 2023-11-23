@@ -7,6 +7,7 @@ module top(
     assign clk = clkin;   
 
     logic           reset_n;
+    
     logic           m_axis_s2mm_cmdsts_aresetn;
     logic [7:0]     M_AXIS_S2MM_STS_tdata;
     logic [0:0]     M_AXIS_S2MM_STS_tkeep;
@@ -25,7 +26,25 @@ module top(
     logic           S_AXIS_S2MM_tready;
     logic           S_AXIS_S2MM_tvalid;
     
-    logic [27:0]    bram0_addr;
+    logic           m_axis_mm2s_cmdsts_aresetn;
+    logic [7:0]     M_AXIS_MM2S_STS_tdata;
+    logic [0:0]     M_AXIS_MM2S_STS_tkeep;
+    logic           M_AXIS_MM2S_STS_tlast;
+    logic           M_AXIS_MM2S_STS_tready;
+    logic           M_AXIS_MM2S_STS_tvalid;
+    
+    logic [71:0]    S_AXIS_MM2S_CMD_tdata;
+    logic           S_AXIS_MM2S_CMD_tready;
+    logic           S_AXIS_MM2S_CMD_tvalid;   
+    logic           mm2s_err;
+         
+    logic [63:0]    M_AXIS_MM2S_tdata;
+    logic [7:0]     M_AXIS_MM2S_tkeep;
+    logic           M_AXIS_MM2S_tlast;
+    logic           M_AXIS_MM2S_tready;
+    logic           M_AXIS_MM2S_tvalid;
+    
+    logic [31:0]    bram0_addr;
     logic           bram0_clk;
     logic [31:0]    bram0_din;
     logic [31:0]    bram0_dout;
@@ -52,7 +71,7 @@ module top(
         .S_AXIS_S2MM_CMD_tdata  (S_AXIS_S2MM_CMD_tdata),
         .S_AXIS_S2MM_CMD_tready (S_AXIS_S2MM_CMD_tready),
         .S_AXIS_S2MM_CMD_tvalid (S_AXIS_S2MM_CMD_tvalid),
-        .s2mm_err(s2mm_err),
+        .s2mm_err               (s2mm_err),
         //
         // s2mm stream in
         .S_AXIS_S2MM_tdata      (S_AXIS_S2MM_tdata),
@@ -60,6 +79,27 @@ module top(
         .S_AXIS_S2MM_tlast      (S_AXIS_S2MM_tlast),
         .S_AXIS_S2MM_tready     (S_AXIS_S2MM_tready),
         .S_AXIS_S2MM_tvalid     (S_AXIS_S2MM_tvalid),
+        //
+        // mm2s status
+        .m_axis_mm2s_cmdsts_aresetn(m_axis_mm2s_cmdsts_aresetn),
+        .M_AXIS_MM2S_STS_tdata  (M_AXIS_MM2S_STS_tdata),
+        .M_AXIS_MM2S_STS_tkeep  (M_AXIS_MM2S_STS_tkeep),
+        .M_AXIS_MM2S_STS_tlast  (M_AXIS_MM2S_STS_tlast),
+        .M_AXIS_MM2S_STS_tready (M_AXIS_MM2S_STS_tready),
+        .M_AXIS_MM2S_STS_tvalid (M_AXIS_MM2S_STS_tvalid),
+        //
+        // mm2s command
+        .S_AXIS_MM2S_CMD_tdata  (S_AXIS_MM2S_CMD_tdata),
+        .S_AXIS_MM2S_CMD_tready (S_AXIS_MM2S_CMD_tready),
+        .S_AXIS_MM2S_CMD_tvalid (S_AXIS_MM2S_CMD_tvalid),  
+        .mm2s_err               (mm2s_err),      
+        //
+        // mm2s stream out
+        .M_AXIS_MM2S_tdata      (M_AXIS_MM2S_tdata),
+        .M_AXIS_MM2S_tkeep      (M_AXIS_MM2S_tkeep),
+        .M_AXIS_MM2S_tlast      (M_AXIS_MM2S_tlast),
+        .M_AXIS_MM2S_tready     (M_AXIS_MM2S_tready),
+        .M_AXIS_MM2S_tvalid     (M_AXIS_MM2S_tvalid),
         //
         // bram control
         .bram0_addr             (bram0_addr),
@@ -81,10 +121,11 @@ module top(
     assign reset = reset_pipe[7];
     assign reset_n = ~reset;
     assign m_axis_s2mm_cmdsts_aresetn = ~reset_pipe[15];
+    assign m_axis_mm2s_cmdsts_aresetn = ~reset_pipe[15];
     
 
     
-    // data generator for write memory
+    // s2mm data generator
     // the adc will produce data once per seven cycles
     logic data_fifo_empty, data_fifo_wr, data_fifo_full;
     logic[63:0] wdata = -1;
@@ -111,7 +152,7 @@ module top(
     
     
     
-    // command interface
+    // s2mm command interface
     localparam logic[22:0] s2mm_btt = 23'h00_1000;
     localparam logic s2mm_type = 1'b1;
     localparam logic[3:0] s2mm_tag = 4'hA;
@@ -133,14 +174,21 @@ module top(
     end
     
     
-    // status interface
+    // s2mm status interface
     assign M_AXIS_S2MM_STS_tready = 1;
     
     
+    // mm2s data
+    assign M_AXIS_MM2S_tready = 1;
+    
+    // mm2s command
+    assign S_AXIS_MM2S_CMD_tvalid = 0;
+    
+    // mm2s status
+    assign M_AXIS_MM2S_STS_tready = 1;
     
     
-    
-    top_ila ila_inst (.clk(clk), .probe0({M_AXIS_S2MM_STS_tready, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
+    top_ila ila_inst (.clk(clk), .probe0({M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
     
         
 endmodule
