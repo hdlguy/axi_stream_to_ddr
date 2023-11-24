@@ -24,6 +24,7 @@ set_property synth_checkpoint_mode None [get_files ./proj.srcs/sources_1/bd/syst
 
 
 read_verilog -sv ../source/xpm_sync_fifo/xpm_sync_fifo.sv
+read_verilog -sv ../source/mover_control.sv
 read_verilog -sv ../source/top.sv
 
 

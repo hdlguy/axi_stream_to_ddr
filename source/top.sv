@@ -120,8 +120,6 @@ module top(
     logic reset;
     assign reset = reset_pipe[7];
     assign reset_n = ~reset;
-    assign m_axis_s2mm_cmdsts_aresetn = ~reset_pipe[15];
-    assign m_axis_mm2s_cmdsts_aresetn = ~reset_pipe[15];
     
 
     
@@ -142,16 +140,82 @@ module top(
     assign S_AXIS_S2MM_tkeep = 4'b1111;
     assign S_AXIS_S2MM_tlast = 0;
 
-    // buffer the write data in a fifo
+    // buffer the s2mm data in a fifo
     xpm_sync_fifo #(.W(64), .D(512)) data_fifo_inst (
         .clk(clk), .srst(1'b0), .din(wdata), .wr_en(data_fifo_wr), .full(data_fifo_full),
         .rd_en(S_AXIS_S2MM_tready), .dout(S_AXIS_S2MM_tdata), .empty(data_fifo_empty)
     );
     assign S_AXIS_S2MM_tvalid = ~data_fifo_empty;
+
+
+    // mm2s data
+    assign M_AXIS_MM2S_tready = 1;
     
     
+    // datamover control
+    mover_control control_inst (
+        //
+        .clk                        (clk),
+        .reset                      (reset),
+        //
+        .m_axis_s2mm_cmdsts_aresetn (m_axis_s2mm_cmdsts_aresetn ),
+        .S_AXIS_S2MM_CMD_tdata      (S_AXIS_S2MM_CMD_tdata),
+        .S_AXIS_S2MM_CMD_tvalid     (S_AXIS_S2MM_CMD_tvalid),
+        .S_AXIS_S2MM_CMD_tready     (S_AXIS_S2MM_CMD_tready),
+        //
+        .M_AXIS_S2MM_STS_tdata      (M_AXIS_S2MM_STS_tdata),
+        .M_AXIS_S2MM_STS_tkeep      (M_AXIS_S2MM_STS_tkeep),
+        .M_AXIS_S2MM_STS_tlast      (M_AXIS_S2MM_STS_tlast),
+        .M_AXIS_S2MM_STS_tready     (M_AXIS_S2MM_STS_tready),
+        .M_AXIS_S2MM_STS_tvalid     (M_AXIS_S2MM_STS_tvalid),
+        //
+        .m_axis_mm2s_cmdsts_aresetn (m_axis_mm2s_cmdsts_aresetn),
+        .S_AXIS_MM2S_CMD_tdata      (S_AXIS_MM2S_CMD_tdata),
+        .S_AXIS_MM2S_CMD_tvalid     (S_AXIS_MM2S_CMD_tvalid),   
+        .S_AXIS_MM2S_CMD_tready     (S_AXIS_MM2S_CMD_tready),
+        //
+        .M_AXIS_MM2S_STS_tdata      (M_AXIS_MM2S_STS_tdata),
+        .M_AXIS_MM2S_STS_tkeep      (M_AXIS_MM2S_STS_tkeep),
+        .M_AXIS_MM2S_STS_tlast      (M_AXIS_MM2S_STS_tlast),
+        .M_AXIS_MM2S_STS_tready     (M_AXIS_MM2S_STS_tready),
+        .M_AXIS_MM2S_STS_tvalid     (M_AXIS_MM2S_STS_tvalid)
+    );
     
+    // debug
+    top_ila ila_inst (.clk(clk), .probe0({M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
+        
+endmodule
+
+/*
+module mover_control (
+    input   logic           clk,
+    input   logic           reset,
+    //
+    output  logic           m_axis_s2mm_cmdsts_aresetn,
+    output  logic [71:0]    S_AXIS_S2MM_CMD_tdata,
+    output  logic           S_AXIS_S2MM_CMD_tvalid,
+    input   logic           S_AXIS_S2MM_CMD_tready,
+    //
+    input   logic [7:0]     M_AXIS_S2MM_STS_tdata,
+    input   logic [0:0]     M_AXIS_S2MM_STS_tkeep,
+    input   logic           M_AXIS_S2MM_STS_tlast,
+    output  logic           M_AXIS_S2MM_STS_tready,
+    input   logic           M_AXIS_S2MM_STS_tvalid,
+    //
+    output  logic           m_axis_mm2s_cmdsts_aresetn,
+    output  logic [71:0]    S_AXIS_MM2S_CMD_tdata,
+    output  logic           S_AXIS_MM2S_CMD_tvalid,   
+    input   logic           S_AXIS_MM2S_CMD_tready,
+    //
+    input   logic [7:0]     M_AXIS_MM2S_STS_tdata,
+    input   logic [0:0]     M_AXIS_MM2S_STS_tkeep,
+    input   logic           M_AXIS_MM2S_STS_tlast,
+    output  logic           M_AXIS_MM2S_STS_tready,
+    input   logic           M_AXIS_MM2S_STS_tvalid
+);
+*/   
     
+/*
     // s2mm command interface
     localparam logic[22:0] s2mm_btt = 23'h00_1000;
     localparam logic s2mm_type = 1'b1;
@@ -189,9 +253,7 @@ module top(
     
     
     top_ila ila_inst (.clk(clk), .probe0({M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
-    
         
 endmodule
 
-/*
 */
