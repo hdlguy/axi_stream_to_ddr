@@ -16,14 +16,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="401.000001 us"></ZoomEndTime>
+      <ZoomEndTime time="416.200001 us"></ZoomEndTime>
       <Cursor1Time time="0.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="373"></NameColumnWidth>
-      <ValueColumnWidth column_width="345"></ValueColumnWidth>
+      <NameColumnWidth column_width="444"></NameColumnWidth>
+      <ValueColumnWidth column_width="269"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="44" />
+   <WVObjectSize size="65" />
    <wvobject type="logic" fp_name="/top_tb/clkin">
       <obj_property name="ElementShortName">clkin</obj_property>
       <obj_property name="ObjectShortName">clkin</obj_property>
@@ -47,6 +47,14 @@
    <wvobject type="logic" fp_name="/top_tb/uut/reset_n">
       <obj_property name="ElementShortName">reset_n</obj_property>
       <obj_property name="ObjectShortName">reset_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/mover_start">
+      <obj_property name="ElementShortName">mover_start</obj_property>
+      <obj_property name="ObjectShortName">mover_start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/mover_done">
+      <obj_property name="ElementShortName">mover_done</obj_property>
+      <obj_property name="ObjectShortName">mover_done</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/top_tb/uut/m_axis_s2mm_cmdsts_aresetn">
       <obj_property name="ElementShortName">m_axis_s2mm_cmdsts_aresetn</obj_property>
@@ -151,13 +159,12 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/bram0_addr">
-      <obj_property name="ElementShortName">bram0_addr[27:0]</obj_property>
-      <obj_property name="ObjectShortName">bram0_addr[27:0]</obj_property>
+      <obj_property name="ElementShortName">bram0_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bram0_addr[31:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/bram0_we">
       <obj_property name="ElementShortName">bram0_we[3:0]</obj_property>
       <obj_property name="ObjectShortName">bram0_we[3:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/top_tb/uut/bram0_clk">
       <obj_property name="ElementShortName">bram0_clk</obj_property>
@@ -179,24 +186,61 @@
       <obj_property name="ElementShortName">bram0_rst</obj_property>
       <obj_property name="ObjectShortName">bram0_rst</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/uut/s2mm_btt">
-      <obj_property name="ElementShortName">s2mm_btt[22:0]</obj_property>
-      <obj_property name="ObjectShortName">s2mm_btt[22:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject type="logic" fp_name="/top_tb/uut/M_AXIS_MM2S_STS_tready">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_STS_tready</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_STS_tready</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/uut/s2mm_type">
-      <obj_property name="ElementShortName">s2mm_type</obj_property>
-      <obj_property name="ObjectShortName">s2mm_type</obj_property>
+   <wvobject type="logic" fp_name="/top_tb/uut/M_AXIS_MM2S_STS_tvalid">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_STS_tvalid</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_STS_tvalid</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/uut/s2mm_start">
-      <obj_property name="ElementShortName">s2mm_start[31:0]</obj_property>
-      <obj_property name="ObjectShortName">s2mm_start[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject type="array" fp_name="/top_tb/uut/M_AXIS_MM2S_STS_tdata">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_STS_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_STS_tdata[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/uut/s2mm_btt">
-      <obj_property name="ElementShortName">s2mm_btt[22:0]</obj_property>
-      <obj_property name="ObjectShortName">s2mm_btt[22:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject type="logic" fp_name="/top_tb/uut/S_AXIS_MM2S_CMD_tready">
+      <obj_property name="ElementShortName">S_AXIS_MM2S_CMD_tready</obj_property>
+      <obj_property name="ObjectShortName">S_AXIS_MM2S_CMD_tready</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/S_AXIS_MM2S_CMD_tvalid">
+      <obj_property name="ElementShortName">S_AXIS_MM2S_CMD_tvalid</obj_property>
+      <obj_property name="ObjectShortName">S_AXIS_MM2S_CMD_tvalid</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/S_AXIS_MM2S_CMD_tdata">
+      <obj_property name="ElementShortName">S_AXIS_MM2S_CMD_tdata[71:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXIS_MM2S_CMD_tdata[71:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/M_AXIS_MM2S_tready">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_tready</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/M_AXIS_MM2S_tvalid">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_tvalid</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/M_AXIS_MM2S_tdata">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/M_AXIS_MM2S_tlast">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_tlast</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_tlast</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/M_AXIS_MM2S_tkeep">
+      <obj_property name="ElementShortName">M_AXIS_MM2S_tkeep[7:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXIS_MM2S_tkeep[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="divider57" type="divider">
       <obj_property name="label">system</obj_property>
@@ -206,17 +250,17 @@
       <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_AWVALID</obj_property>
       <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_AWVALID</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_AWREADY">
-      <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_AWREADY</obj_property>
-      <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_AWREADY</obj_property>
+   <wvobject type="array" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_AWREADY">
+      <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_AWREADY[0:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_AWREADY[0:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_AWADDR">
       <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_AWADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_AWADDR[31:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_WREADY">
-      <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_WREADY</obj_property>
-      <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WREADY</obj_property>
+   <wvobject type="array" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_WREADY">
+      <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_WREADY[0:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WREADY[0:0]</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/top_tb/uut/system_i/axi_datamover_0_M_AXI_S2MM_WVALID">
       <obj_property name="ElementShortName">axi_datamover_0_M_AXI_S2MM_WVALID</obj_property>
@@ -227,7 +271,55 @@
       <obj_property name="ObjectShortName">axi_datamover_0_M_AXI_S2MM_WDATA[63:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/top_tb/uut/system_i/bram0_addr">
-      <obj_property name="ElementShortName">bram0_addr[27:0]</obj_property>
-      <obj_property name="ObjectShortName">bram0_addr[27:0]</obj_property>
+      <obj_property name="ElementShortName">bram0_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bram0_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider51" type="divider">
+      <obj_property name="label">control</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/aresetn">
+      <obj_property name="ElementShortName">aresetn</obj_property>
+      <obj_property name="ObjectShortName">aresetn</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/control_reset">
+      <obj_property name="ElementShortName">control_reset</obj_property>
+      <obj_property name="ObjectShortName">control_reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/control_inst/state">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/done">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/control_inst/Ncommand">
+      <obj_property name="ElementShortName">Ncommand[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Ncommand[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/inc_cmd_count">
+      <obj_property name="ElementShortName">inc_cmd_count</obj_property>
+      <obj_property name="ObjectShortName">inc_cmd_count</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uut/control_inst/clr_cmd_count">
+      <obj_property name="ElementShortName">clr_cmd_count</obj_property>
+      <obj_property name="ObjectShortName">clr_cmd_count</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uut/control_inst/cmd_count">
+      <obj_property name="ElementShortName">cmd_count[22:0]</obj_property>
+      <obj_property name="ObjectShortName">cmd_count[22:0]</obj_property>
    </wvobject>
 </wave_config>

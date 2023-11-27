@@ -51,7 +51,7 @@ module top(
     logic           bram0_en;
     logic           bram0_rst;
     logic [3:0]     bram0_we;
-    
+
 
     // IPI Block Diagram, contains datamover and axi bram controller
     system system_i (
@@ -153,10 +153,14 @@ module top(
     
     
     // datamover control
+    logic mover_start=0, mover_done;
     mover_control control_inst (
         //
         .clk                        (clk),
         .reset                      (reset),
+        //
+        .start                      (mover_start),
+        .done                       (mover_done),
         //
         .m_axis_s2mm_cmdsts_aresetn (m_axis_s2mm_cmdsts_aresetn ),
         .S_AXIS_S2MM_CMD_tdata      (S_AXIS_S2MM_CMD_tdata),
@@ -180,6 +184,10 @@ module top(
         .M_AXIS_MM2S_STS_tready     (M_AXIS_MM2S_STS_tready),
         .M_AXIS_MM2S_STS_tvalid     (M_AXIS_MM2S_STS_tvalid)
     );
+
+    always_ff @(posedge clk) begin
+        mover_start <= mover_done;
+    end
     
     // debug
     top_ila ila_inst (.clk(clk), .probe0({M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70

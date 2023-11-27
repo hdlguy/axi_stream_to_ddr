@@ -23,6 +23,7 @@ generate_target {synthesis implementation} [get_files ./proj.srcs/sources_1/bd/s
 set_property synth_checkpoint_mode None [get_files ./proj.srcs/sources_1/bd/system/system.bd]
 
 read_verilog -sv ../source/xpm_sync_fifo/xpm_sync_fifo.sv
+read_verilog -sv ../source/mover_control.sv
 read_verilog -sv ../source/top.sv
 read_verilog -sv ../source/top_tb.sv
 
