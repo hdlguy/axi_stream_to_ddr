@@ -129,12 +129,13 @@ module top(
     logic[63:0] wdata = -1;
     logic[2:0] fifo_wr_count=6;
     always_ff @(posedge clk) begin
-        fifo_wr_count <= fifo_wr_count - 1;
         if (fifo_wr_count == 0) begin
             data_fifo_wr <= 1;
             wdata <= wdata + 1;
+            fifo_wr_count <= 6;
         end else begin
             data_fifo_wr <= 0;
+            fifo_wr_count <= fifo_wr_count - 1;
         end
     end
     assign S_AXIS_S2MM_tkeep = 4'b1111;
@@ -142,7 +143,7 @@ module top(
 
     // buffer the s2mm data in a fifo
     xpm_sync_fifo #(.W(64), .D(512)) data_fifo_inst (
-        .clk(clk), .srst(1'b0), .din(wdata), .wr_en(data_fifo_wr), .full(data_fifo_full),
+        .clk(clk), .srst(mover_done), .din(wdata), .wr_en(data_fifo_wr), .full(data_fifo_full),
         .rd_en(S_AXIS_S2MM_tready), .dout(S_AXIS_S2MM_tdata), .empty(data_fifo_empty)
     );
     assign S_AXIS_S2MM_tvalid = ~data_fifo_empty;
@@ -185,8 +186,15 @@ module top(
         .M_AXIS_MM2S_STS_tvalid     (M_AXIS_MM2S_STS_tvalid)
     );
 
+    // restart the machine after a delay on done.
+    logic[4:0] mover_delay=-1;
     always_ff @(posedge clk) begin
-        mover_start <= mover_done;
+        if (~mover_done) begin
+            mover_delay <= -1;
+        end else begin
+            mover_delay <= mover_delay - 1;
+            mover_start <= (mover_delay == 0);
+        end
     end
     
     // debug
