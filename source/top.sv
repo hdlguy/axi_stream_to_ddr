@@ -1,6 +1,22 @@
 // This module is an experiment to see how to stream ADC data to a DDR3 memory and then read it back.
 module top(
-    input   logic   clkin
+    input   logic   clkin,
+    //
+    output logic [13:0] DDR3_addr,
+    output logic [2:0]  DDR3_ba,
+    output logic        DDR3_cas_n,
+    output logic [0:0]  DDR3_ck_n,
+    output logic [0:0]  DDR3_ck_p,
+    output logic [0:0]  DDR3_cke,
+    output logic [0:0]  DDR3_cs_n,
+    output logic [1:0]  DDR3_dm,
+    inout  logic [15:0] DDR3_dq,
+    inout  logic [1:0]  DDR3_dqs_n,
+    inout  logic [1:0]  DDR3_dqs_p,
+    output logic [0:0]  DDR3_odt,
+    output logic        DDR3_ras_n,
+    output logic        DDR3_reset_n,
+    output logic        DDR3_we_n    
 );
 
     logic clk;
@@ -52,6 +68,7 @@ module top(
     logic           bram0_rst;
     logic [3:0]     bram0_we;
 
+    logic           init_calib_complete;
 
     // IPI Block Diagram, contains datamover and axi bram controller
     system system_i (
@@ -108,7 +125,24 @@ module top(
         .bram0_dout             (bram0_dout),
         .bram0_en               (bram0_en),
         .bram0_rst              (bram0_rst),
-        .bram0_we               (bram0_we)
+        .bram0_we               (bram0_we),
+        //
+        .DDR3_addr(DDR3_addr),
+        .DDR3_ba(DDR3_ba),
+        .DDR3_cas_n(DDR3_cas_n),
+        .DDR3_ck_n(DDR3_ck_n),
+        .DDR3_ck_p(DDR3_ck_p),
+        .DDR3_cke(DDR3_cke),
+        .DDR3_cs_n(DDR3_cs_n),
+        .DDR3_dm(DDR3_dm),
+        .DDR3_dq(DDR3_dq),
+        .DDR3_dqs_n(DDR3_dqs_n),
+        .DDR3_dqs_p(DDR3_dqs_p),
+        .DDR3_odt(DDR3_odt),
+        .DDR3_ras_n(DDR3_ras_n),
+        .DDR3_reset_n(DDR3_reset_n),
+        .DDR3_we_n(DDR3_we_n),
+        .init_calib_complete(init_calib_complete)
     );
     
     test_bram bram_inst (.clka(bram0_clk), .rsta(bram0_rst), .ena(bram0_en), .wea(bram0_we), .addra(bram0_addr[13:2]), .dina(bram0_din), .douta(bram0_dout), .rsta_busy());
@@ -203,7 +237,7 @@ module top(
     end
     
     // debug
-    top_ila ila_inst (.clk(clk), .probe0({M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
+    top_ila ila_inst (.clk(clk), .probe0({init_calib_complete, M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 71
         
 endmodule
 
