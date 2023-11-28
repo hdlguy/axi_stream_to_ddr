@@ -44,7 +44,7 @@ module top(
     logic           M_AXIS_MM2S_tready;
     logic           M_AXIS_MM2S_tvalid;
     
-    logic [31:0]    bram0_addr;
+    logic [27:0]    bram0_addr;
     logic           bram0_clk;
     logic [31:0]    bram0_din;
     logic [31:0]    bram0_dout;
@@ -150,7 +150,12 @@ module top(
 
 
     // mm2s data
-    assign M_AXIS_MM2S_tready = 1;
+    // will go out on 100Mbps Ethernet link so 1 read every 64 clock cycles.
+    logic[5:0] mm2s_rd_div=-1;
+    always_ff @(posedge clk) begin
+        mm2s_rd_div <= mm2s_rd_div - 1;
+        if (mm2s_rd_div == 0) M_AXIS_MM2S_tready <= 1; else  M_AXIS_MM2S_tready <= 0;
+    end
     
     
     // datamover control
