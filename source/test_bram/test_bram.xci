@@ -155,20 +155,20 @@
         "C_DISABLE_WARN_BHV_RANGE": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_COUNT_36K_BRAM": [ { "value": "4", "resolve_type": "generated", "usage": "all" } ],
         "C_COUNT_18K_BRAM": [ { "value": "0", "resolve_type": "generated", "usage": "all" } ],
-        "C_EST_POWER_SUMMARY": [ { "value": "Estimated Power for IP     :     10.142799 mW", "resolve_type": "generated", "usage": "all" } ]
+        "C_EST_POWER_SUMMARY": [ { "value": "Estimated Power for IP     :     9.635661 mW", "resolve_type": "generated", "usage": "all" } ]
       },
       "project_parameters": {
         "ARCHITECTURE": [ { "value": "artix7" } ],
-        "BASE_BOARD_PART": [ { "value": "" } ],
+        "BASE_BOARD_PART": [ { "value": "digilentinc.com:arty-a7-35:part0:1.1" } ],
         "BOARD_CONNECTIONS": [ { "value": "" } ],
-        "DEVICE": [ { "value": "xc7a35t" } ],
+        "DEVICE": [ { "value": "xc7a35ti" } ],
         "PACKAGE": [ { "value": "csg324" } ],
         "PREFHDL": [ { "value": "VERILOG" } ],
         "SILICON_REVISION": [ { "value": "" } ],
         "SIMULATOR_LANGUAGE": [ { "value": "MIXED" } ],
-        "SPEEDGRADE": [ { "value": "-1" } ],
+        "SPEEDGRADE": [ { "value": "-1L" } ],
         "STATIC_POWER": [ { "value": "" } ],
-        "TEMPERATURE_GRADE": [ { "value": "" } ]
+        "TEMPERATURE_GRADE": [ { "value": "I" } ]
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
