@@ -29,7 +29,7 @@ module mover_control (
     input   logic           M_AXIS_MM2S_STS_tvalid
 );
 
-    localparam int transfer_start = 0; //32'h8000_0000;
+    localparam int transfer_start = 32'h8000_0000;
     localparam int transfer_size = 2**28;
     localparam logic[22:0] btt = 23'h00_1000;
     localparam int Ncommand = transfer_size/btt;

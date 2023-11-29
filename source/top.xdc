@@ -1,7 +1,11 @@
 
+create_clock -period 10.0 [get_ports clkin]
+
 set_property PACKAGE_PIN E3 [get_ports clkin]
 set_property IOSTANDARD LVCMOS33 [get_ports clkin]
-create_clock -period 10.0 [get_ports clkin]
+
+set_property PACKAGE_PIN C2 [get_ports reset_in_n]
+set_property IOSTANDARD LVCMOS33 [get_ports reset_in_n]
 
 #set_property IOSTANDARD LVCMOS33 [get_ports {led[*]}]
 #set_property PACKAGE_PIN T10 [get_ports {led[7]}]

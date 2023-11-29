@@ -1,6 +1,7 @@
 // This module is an experiment to see how to stream ADC data to a DDR3 memory and then read it back.
 module top(
     input   logic   clkin,
+    input   logic   reset_in_n,
     //
     output logic [13:0] DDR3_addr,
     output logic [2:0]  DDR3_ba,
@@ -141,8 +142,7 @@ module top(
         .DDR3_odt(DDR3_odt),
         .DDR3_ras_n(DDR3_ras_n),
         .DDR3_reset_n(DDR3_reset_n),
-        .DDR3_we_n(DDR3_we_n),
-        .init_calib_complete(init_calib_complete)
+        .DDR3_we_n(DDR3_we_n)
     );
     
     test_bram bram_inst (.clka(bram0_clk), .rsta(bram0_rst), .ena(bram0_en), .wea(bram0_we), .addra(bram0_addr[13:2]), .dina(bram0_din), .douta(bram0_dout), .rsta_busy());
@@ -150,7 +150,13 @@ module top(
     
     // system reset
     logic[15:0] reset_pipe = -1;
-    always_ff @(posedge clk) reset_pipe <= {reset_pipe[14:0], 1'b0};
+    always_ff @(posedge clk) begin 
+        if (~reset_in_n) begin
+            reset_pipe <= -1;
+        end else begin
+            reset_pipe <= {reset_pipe[14:0], 1'b0};
+        end
+    end
     logic reset;
     assign reset = reset_pipe[7];
     assign reset_n = ~reset;
@@ -184,8 +190,8 @@ module top(
 
 
     // mm2s data
-    // will go out on 100Mbps Ethernet link so 1 read every 64 clock cycles.
-    logic[5:0] mm2s_rd_div=-1;
+    // will go out on 100Mbps Ethernet link so 1 read every few clock cycles.
+    logic[2:0] mm2s_rd_div=-1;
     always_ff @(posedge clk) begin
         mm2s_rd_div <= mm2s_rd_div - 1;
         if (mm2s_rd_div == 0) M_AXIS_MM2S_tready <= 1; else  M_AXIS_MM2S_tready <= 0;
@@ -237,78 +243,9 @@ module top(
     end
     
     // debug
-    top_ila ila_inst (.clk(clk), .probe0({init_calib_complete, M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 71
+    top_ila ila_inst (.clk(clk), .probe0({S_AXIS_MM2S_CMD_tready, M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 71
         
 endmodule
 
 /*
-module mover_control (
-    input   logic           clk,
-    input   logic           reset,
-    //
-    output  logic           m_axis_s2mm_cmdsts_aresetn,
-    output  logic [71:0]    S_AXIS_S2MM_CMD_tdata,
-    output  logic           S_AXIS_S2MM_CMD_tvalid,
-    input   logic           S_AXIS_S2MM_CMD_tready,
-    //
-    input   logic [7:0]     M_AXIS_S2MM_STS_tdata,
-    input   logic [0:0]     M_AXIS_S2MM_STS_tkeep,
-    input   logic           M_AXIS_S2MM_STS_tlast,
-    output  logic           M_AXIS_S2MM_STS_tready,
-    input   logic           M_AXIS_S2MM_STS_tvalid,
-    //
-    output  logic           m_axis_mm2s_cmdsts_aresetn,
-    output  logic [71:0]    S_AXIS_MM2S_CMD_tdata,
-    output  logic           S_AXIS_MM2S_CMD_tvalid,   
-    input   logic           S_AXIS_MM2S_CMD_tready,
-    //
-    input   logic [7:0]     M_AXIS_MM2S_STS_tdata,
-    input   logic [0:0]     M_AXIS_MM2S_STS_tkeep,
-    input   logic           M_AXIS_MM2S_STS_tlast,
-    output  logic           M_AXIS_MM2S_STS_tready,
-    input   logic           M_AXIS_MM2S_STS_tvalid
-);
-*/   
-    
-/*
-    // s2mm command interface
-    localparam logic[22:0] s2mm_btt = 23'h00_1000;
-    localparam logic s2mm_type = 1'b1;
-    localparam logic[3:0] s2mm_tag = 4'hA;
-    
-    logic[31:0] s2mm_start = 32'h0000_0000;
-    assign S_AXIS_S2MM_CMD_tdata = {4'b0000, s2mm_tag, s2mm_start, 8'b0000_0000, s2mm_type, s2mm_btt};
-    always_ff @(posedge clk) begin
-        if (reset) begin
-            S_AXIS_S2MM_CMD_tvalid <= 1;
-        end else begin
-            if (S_AXIS_S2MM_CMD_tready) begin
-                S_AXIS_S2MM_CMD_tvalid <= 0;
-            end
-            if ((S_AXIS_S2MM_CMD_tready) & (S_AXIS_S2MM_CMD_tvalid)) begin
-                s2mm_start <= s2mm_start + s2mm_btt; // increment the start address.
-            end
-            if (M_AXIS_S2MM_STS_tvalid) S_AXIS_S2MM_CMD_tvalid <= 1; // if the command is complete, run it again            
-        end
-    end
-    
-    
-    // s2mm status interface
-    assign M_AXIS_S2MM_STS_tready = 1;
-    
-    
-    // mm2s data
-    assign M_AXIS_MM2S_tready = 1;
-    
-    // mm2s command
-    assign S_AXIS_MM2S_CMD_tvalid = 0;
-    
-    // mm2s status
-    assign M_AXIS_MM2S_STS_tready = 1;
-    
-    
-    top_ila ila_inst (.clk(clk), .probe0({M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 70
-        
-endmodule
-
 */

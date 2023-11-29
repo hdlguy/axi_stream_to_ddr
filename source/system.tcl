@@ -132,9 +132,9 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_datamover:5.1\
 xilinx.com:ip:axi_bram_ctrl:4.1\
-xilinx.com:ip:system_ila:1.1\
 xilinx.com:ip:mig_7series:4.2\
 xilinx.com:ip:proc_sys_reset:5.0\
+xilinx.com:ip:system_ila:1.1\
 "
 
    set list_ips_missing ""
@@ -405,10 +405,6 @@ proc create_root_design { parentCell } {
 
 
   # Create ports
-  set clk [ create_bd_port -dir I -type clk -freq_hz 100000000 clk ]
-  set_property -dict [ list \
-   CONFIG.ASSOCIATED_RESET {reset_N:m_axis_s2mm_cmdsts_aresetn:m_axis_mm2s_cmdsts_aresetn} \
- ] $clk
   set reset_n [ create_bd_port -dir I -type rst reset_n ]
   set_property -dict [ list \
    CONFIG.POLARITY {ACTIVE_LOW} \
@@ -417,6 +413,7 @@ proc create_root_design { parentCell } {
   set s2mm_err [ create_bd_port -dir O s2mm_err ]
   set m_axis_mm2s_cmdsts_aresetn [ create_bd_port -dir I -type rst m_axis_mm2s_cmdsts_aresetn ]
   set mm2s_err [ create_bd_port -dir O mm2s_err ]
+  set clk [ create_bd_port -dir I -type clk -freq_hz 100000000 clk ]
 
   # Create instance: axi_datamover_0, and set properties
   set axi_datamover_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_datamover:5.1 axi_datamover_0 ]
@@ -450,19 +447,6 @@ proc create_root_design { parentCell } {
   ] $axi_interconnect_0
 
 
-  # Create instance: system_ila_0, and set properties
-  set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
-  set_property -dict [list \
-    CONFIG.C_ADV_TRIGGER {true} \
-    CONFIG.C_DATA_DEPTH {2048} \
-    CONFIG.C_EN_STRG_QUAL {1} \
-    CONFIG.C_INPUT_PIPE_STAGES {2} \
-    CONFIG.C_MON_TYPE {MIX} \
-    CONFIG.C_NUM_MONITOR_SLOTS {1} \
-    CONFIG.C_NUM_OF_PROBES {2} \
-  ] $system_ila_0
-
-
   # Create instance: mig_7series_0, and set properties
   set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:4.2 mig_7series_0 ]
 
@@ -482,6 +466,19 @@ proc create_root_design { parentCell } {
   # Create instance: rst_mig_7series_0_81M, and set properties
   set rst_mig_7series_0_81M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_mig_7series_0_81M ]
 
+  # Create instance: system_ila_1, and set properties
+  set system_ila_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_1 ]
+  set_property -dict [list \
+    CONFIG.C_ADV_TRIGGER {true} \
+    CONFIG.C_DATA_DEPTH {2048} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.C_INPUT_PIPE_STAGES {2} \
+    CONFIG.C_MON_TYPE {MIX} \
+    CONFIG.C_NUM_MONITOR_SLOTS {1} \
+    CONFIG.C_NUM_OF_PROBES {1} \
+  ] $system_ila_1
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXIS_MM2S_CMD_0_1 [get_bd_intf_ports S_AXIS_MM2S_CMD] [get_bd_intf_pins axi_datamover_0/S_AXIS_MM2S_CMD]
   connect_bd_intf_net -intf_net S_AXIS_S2MM_0_1 [get_bd_intf_ports S_AXIS_S2MM] [get_bd_intf_pins axi_datamover_0/S_AXIS_S2MM]
@@ -493,22 +490,23 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_datamover_0_M_AXI_MM2S [get_bd_intf_pins axi_datamover_0/M_AXI_MM2S] [get_bd_intf_pins axi_interconnect_0/S01_AXI]
   connect_bd_intf_net -intf_net axi_datamover_0_M_AXI_S2MM [get_bd_intf_pins axi_datamover_0/M_AXI_S2MM] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
-connect_bd_intf_net -intf_net [get_bd_intf_nets axi_interconnect_0_M00_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins system_ila_0/SLOT_0_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_interconnect_0/M01_AXI] [get_bd_intf_pins mig_7series_0/S_AXI]
+connect_bd_intf_net -intf_net [get_bd_intf_nets axi_interconnect_0_M01_AXI] [get_bd_intf_pins axi_interconnect_0/M01_AXI] [get_bd_intf_pins system_ila_1/SLOT_0_AXI]
   connect_bd_intf_net -intf_net mig_7series_0_DDR3 [get_bd_intf_ports DDR3] [get_bd_intf_pins mig_7series_0/DDR3]
 
   # Create port connections
-  connect_bd_net -net axi_datamover_0_mm2s_err [get_bd_pins axi_datamover_0/mm2s_err] [get_bd_ports mm2s_err] [get_bd_pins system_ila_0/probe0]
-  connect_bd_net -net axi_datamover_0_s2mm_err [get_bd_pins axi_datamover_0/s2mm_err] [get_bd_ports s2mm_err] [get_bd_pins system_ila_0/probe1]
-  connect_bd_net -net clk_wiz_clk_out1 [get_bd_ports clk] [get_bd_pins axi_datamover_0/m_axi_s2mm_aclk] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_awclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aclk] [get_bd_pins axi_datamover_0/m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/S01_ACLK] [get_bd_pins system_ila_0/clk]
+  connect_bd_net -net axi_datamover_0_mm2s_err [get_bd_pins axi_datamover_0/mm2s_err] [get_bd_ports mm2s_err]
+  connect_bd_net -net axi_datamover_0_s2mm_err [get_bd_pins axi_datamover_0/s2mm_err] [get_bd_ports s2mm_err]
+  connect_bd_net -net clk_wiz_clk_out1 [get_bd_ports clk] [get_bd_pins axi_datamover_0/m_axi_s2mm_aclk] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_awclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aclk] [get_bd_pins axi_datamover_0/m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/S01_ACLK] [get_bd_pins mig_7series_0/sys_clk_i]
   connect_bd_net -net m_axis_mm2s_cmdsts_aresetn_0_1 [get_bd_ports m_axis_mm2s_cmdsts_aresetn] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aresetn]
   connect_bd_net -net m_axis_s2mm_cmdsts_aresetn_0_1 [get_bd_ports m_axis_s2mm_cmdsts_aresetn] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_aresetn]
+  connect_bd_net -net mig_7series_0_init_calib_complete [get_bd_pins mig_7series_0/init_calib_complete] [get_bd_pins system_ila_1/probe0]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins rst_mig_7series_0_81M/dcm_locked]
   connect_bd_net -net mig_7series_0_ui_addn_clk_0 [get_bd_pins mig_7series_0/ui_addn_clk_0] [get_bd_pins mig_7series_0/clk_ref_i]
-  connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins rst_mig_7series_0_81M/slowest_sync_clk] [get_bd_pins mig_7series_0/sys_clk_i]
+  connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins rst_mig_7series_0_81M/slowest_sync_clk] [get_bd_pins system_ila_1/clk]
   connect_bd_net -net mig_7series_0_ui_clk_sync_rst [get_bd_pins mig_7series_0/ui_clk_sync_rst] [get_bd_pins rst_mig_7series_0_81M/ext_reset_in]
-  connect_bd_net -net rst_clk_wiz_100M_peripheral_aresetn [get_bd_ports reset_n] [get_bd_pins axi_datamover_0/m_axi_s2mm_aresetn] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins axi_datamover_0/m_axi_mm2s_aresetn] [get_bd_pins axi_interconnect_0/S01_ARESETN] [get_bd_pins system_ila_0/resetn] [get_bd_pins mig_7series_0/sys_rst]
-  connect_bd_net -net rst_mig_7series_0_81M_peripheral_aresetn [get_bd_pins rst_mig_7series_0_81M/peripheral_aresetn] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins axi_interconnect_0/M01_ARESETN]
+  connect_bd_net -net rst_clk_wiz_100M_peripheral_aresetn [get_bd_ports reset_n] [get_bd_pins axi_datamover_0/m_axi_s2mm_aresetn] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins axi_datamover_0/m_axi_mm2s_aresetn] [get_bd_pins axi_interconnect_0/S01_ARESETN] [get_bd_pins mig_7series_0/sys_rst]
+  connect_bd_net -net rst_mig_7series_0_81M_peripheral_aresetn [get_bd_pins rst_mig_7series_0_81M/peripheral_aresetn] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins axi_interconnect_0/M01_ARESETN] [get_bd_pins system_ila_1/resetn]
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x10000000 -target_address_space [get_bd_addr_spaces axi_datamover_0/Data_MM2S] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
