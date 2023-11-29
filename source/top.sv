@@ -1,8 +1,11 @@
-// This module is an experiment to see how to stream ADC data to a DDR3 memory and then read it back.
+// This module is a working example of how to stream data to a DDR3 memory and then read it back.
 module top(
+    //
     input   logic   clkin,
     input   logic   reset_in_n,
     //
+    output  logic[7:0]  led,
+    // 
     output logic [13:0] DDR3_addr,
     output logic [2:0]  DDR3_ba,
     output logic        DDR3_cas_n,
@@ -182,8 +185,9 @@ module top(
     assign S_AXIS_S2MM_tlast = 0;
 
     // buffer the s2mm data in a fifo
+    logic fifo_srst;
     xpm_sync_fifo #(.W(64), .D(512)) data_fifo_inst (
-        .clk(clk), .srst(mover_done), .din(wdata), .wr_en(data_fifo_wr), .full(data_fifo_full),
+        .clk(clk), .srst(fifo_srst), .din(wdata), .wr_en(data_fifo_wr), .full(data_fifo_full),
         .rd_en(S_AXIS_S2MM_tready), .dout(S_AXIS_S2MM_tdata), .empty(data_fifo_empty)
     );
     assign S_AXIS_S2MM_tvalid = ~data_fifo_empty;
@@ -200,6 +204,7 @@ module top(
     
     // datamover control
     logic mover_start=0, mover_done;
+    assign fifo_srst = mover_done;
     mover_control control_inst (
         //
         .clk                        (clk),
@@ -241,6 +246,15 @@ module top(
             mover_start <= (mover_delay == 0);
         end
     end
+
+    // increment a count each time a transfer starts and drive the LEDs with it.
+    logic mover_start_q=0;
+    logic[7:0] led_count=0;
+    always_ff @(posedge clk) begin
+        mover_start_q <= mover_start;
+        if ((mover_start) && (~mover_start_q)) led_count <= led_count + 1;
+    end
+    assign led = led_count;
     
     // debug
     top_ila ila_inst (.clk(clk), .probe0({S_AXIS_MM2S_CMD_tready, M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 71

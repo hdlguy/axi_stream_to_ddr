@@ -1,4 +1,5 @@
-//
+// This module controls an AXI Datamover core to capture streaming data to memory 
+// and then stream it back out.
 module mover_control (
     input   logic           clk,
     input   logic           reset,
@@ -167,44 +168,4 @@ endmodule
     
 
 /*
-    // s2mm command
-    localparam logic[22:0] s2mm_btt = 23'h00_1000;
-    localparam logic s2mm_type = 1'b1;
-    localparam logic[3:0] s2mm_tag = 4'hA;
-    logic[31:0] s2mm_start = 32'h0000_0000;
-    assign S_AXIS_S2MM_CMD_tdata = {4'b0000, s2mm_tag, s2mm_start, 8'b0000_0000, s2mm_type, s2mm_btt};
-    always_ff @(posedge clk) begin
-        if (reset) begin
-            S_AXIS_S2MM_CMD_tvalid <= 1;
-        end else begin
-            if (S_AXIS_S2MM_CMD_tready) begin
-                S_AXIS_S2MM_CMD_tvalid <= 0;
-            end
-            if ((S_AXIS_S2MM_CMD_tready) & (S_AXIS_S2MM_CMD_tvalid)) begin
-                s2mm_start <= s2mm_start + s2mm_btt; // increment the start address.
-            end
-            if (M_AXIS_S2MM_STS_tvalid) S_AXIS_S2MM_CMD_tvalid <= 1; // if the command is complete, run it again            
-        end
-    end
-    
-    // s2mm status
-    assign M_AXIS_S2MM_STS_tready = 1;
-
-
-
-    
-    // mm2s command
-    localparam logic[22:0] mm2s_btt = 23'h00_1000;
-    localparam logic mm2s_type = 1'b1;
-    localparam logic[3:0] mm2s_tag = 4'hA;
-    logic[31:0] mm2s_start = 32'h0000_0000;
-    assign S_AXIS_MM2S_CMD_tdata = {4'b0000, mm2s_tag, mm2s_start, 8'b0000_0000, mm2s_type, mm2s_btt};
-    assign S_AXIS_MM2S_CMD_tvalid = 0;
-    
-    // mm2s status
-    assign M_AXIS_MM2S_STS_tready = 1;
-
-
-endmodule
-
 */
