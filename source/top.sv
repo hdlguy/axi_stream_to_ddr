@@ -257,7 +257,7 @@ module top(
     assign led = led_count;
     
     // debug
-    top_ila ila_inst (.clk(clk), .probe0({S_AXIS_MM2S_CMD_tready, M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, bram0_en, bram0_rst, bram0_we, bram0_addr, bram0_din})); // 71
+    top_ila ila_inst (.clk(clk), .probe0({S_AXIS_MM2S_CMD_tready, M_AXIS_MM2S_STS_tvalid, M_AXIS_S2MM_STS_tvalid, S_AXIS_S2MM_CMD_tready, S_AXIS_S2MM_CMD_tvalid, mover_start, mover_done})); // 7
         
 endmodule
 
