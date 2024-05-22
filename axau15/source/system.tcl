@@ -326,7 +326,7 @@ proc create_root_design { parentCell } {
   set_property -dict [list \
     CONFIG.C0.DDR4_DataWidth {16} \
     CONFIG.C0.DDR4_InputClockPeriod {4998} \
-    CONFIG.C0.DDR4_MemoryPart {MT40A512M16LY-075} \
+    CONFIG.C0.DDR4_MemoryPart {MT40A512M16HA-083E} \
   ] $ddr4_0
 
 
