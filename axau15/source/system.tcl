@@ -316,7 +316,7 @@ proc create_root_design { parentCell } {
     CONFIG.C_INPUT_PIPE_STAGES {2} \
     CONFIG.C_MON_TYPE {MIX} \
     CONFIG.C_NUM_MONITOR_SLOTS {1} \
-    CONFIG.C_NUM_OF_PROBES {1} \
+    CONFIG.C_NUM_OF_PROBES {2} \
     CONFIG.C_PROBE0_MU_CNT {2} \
   ] $system_ila_1
 
@@ -350,6 +350,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets axi_interconnect_0_M01_AXI] [get
   connect_bd_net -net axi_datamover_0_mm2s_err [get_bd_pins axi_datamover_0/mm2s_err] [get_bd_ports mm2s_err]
   connect_bd_net -net axi_datamover_0_s2mm_err [get_bd_pins axi_datamover_0/s2mm_err] [get_bd_ports s2mm_err]
   connect_bd_net -net ddr4_0_c0_ddr4_ui_clk [get_bd_pins ddr4_0/c0_ddr4_ui_clk] [get_bd_ports axi_aclk] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins rst_mig_7series_0_81M/slowest_sync_clk] [get_bd_pins system_ila_1/clk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_datamover_0/m_axi_mm2s_aclk] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aclk] [get_bd_pins axi_datamover_0/m_axi_s2mm_aclk] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_awclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S01_ACLK]
+  connect_bd_net -net ddr4_0_c0_ddr4_ui_clk_sync_rst [get_bd_pins ddr4_0/c0_ddr4_ui_clk_sync_rst] [get_bd_pins system_ila_1/probe1]
   connect_bd_net -net ddr4_0_c0_init_calib_complete [get_bd_pins ddr4_0/c0_init_calib_complete] [get_bd_pins system_ila_1/probe0]
   connect_bd_net -net m_axis_mm2s_cmdsts_aresetn_0_1 [get_bd_ports m_axis_mm2s_cmdsts_aresetn] [get_bd_pins axi_datamover_0/m_axis_mm2s_cmdsts_aresetn]
   connect_bd_net -net m_axis_s2mm_cmdsts_aresetn_0_1 [get_bd_ports m_axis_s2mm_cmdsts_aresetn] [get_bd_pins axi_datamover_0/m_axis_s2mm_cmdsts_aresetn]

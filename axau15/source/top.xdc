@@ -1,4 +1,9 @@
 
+set_property CFGBVS GND [current_design]
+set_property CONFIG_VOLTAGE 2.5 [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 6 [current_design]
+set_property BITSTREAM.Config.SPI_BUSWIDTH 4 [current_design]
+set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 
 #set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_pins system_i/ddr4_0/inst/u_ddr4_infrastructure/gen_mmcme4.u_mmcme_adv_inst/CLKIN1]
 

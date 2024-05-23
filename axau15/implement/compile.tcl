@@ -22,11 +22,6 @@ write_debug_probes   -force             ./results/top.ltx
 #write_hw_platform -fixed -force -file   ./results/top.xsa
 #write_mem_info      -force              ./results/top.mmi
 
-set_property CFGBVS VCCO [current_design]
-set_property CONFIG_VOLTAGE 2.5 [current_design]
-set_property BITSTREAM.CONFIG.CONFIGRATE 6 [current_design]
-set_property BITSTREAM.Config.SPI_BUSWIDTH 4 [current_design]
-set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 write_bitstream -verbose -force ./results/top.bit
 
 close_project
