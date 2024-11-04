@@ -1,8 +1,8 @@
-Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
-| Tool Version : Vivado v.2023.2 (lin64) Build 4029153 Fri Oct 13 20:13:54 MDT 2023
-| Date         : Thu May 23 08:48:47 2024
-| Host         : WD850X2TB running 64-bit Ubuntu 22.04.4 LTS
+| Tool Version : Vivado v.2024.1 (lin64) Build 5076996 Wed May 22 18:36:09 MDT 2024
+| Date         : Mon Nov  4 17:23:35 2024
+| Host         : WD850X2TB running 64-bit Ubuntu 22.04.5 LTS
 | Command      : report_utilization -file ./results/utilization.rpt
 | Design       : top
 | Device       : xcau15p-ffvb676-2-i
@@ -33,8 +33,8 @@ Table of Contents
 +----------------------------+-------+-------+------------+-----------+-------+
 |          Site Type         |  Used | Fixed | Prohibited | Available | Util% |
 +----------------------------+-------+-------+------------+-----------+-------+
-| CLB LUTs                   | 19752 |     0 |          0 |     77760 | 25.40 |
-|   LUT as Logic             | 16638 |     0 |          0 |     77760 | 21.40 |
+| CLB LUTs                   | 19765 |     0 |          0 |     77760 | 25.42 |
+|   LUT as Logic             | 16651 |     0 |          0 |     77760 | 21.41 |
 |   LUT as Memory            |  3114 |     0 |          0 |     40320 |  7.72 |
 |     LUT as Distributed RAM |   556 |     0 |            |           |       |
 |     LUT as Shift Register  |  2558 |     0 |            |           |       |
@@ -75,13 +75,13 @@ Table of Contents
 +--------------------------------------------+-------+-------+------------+-----------+-------+
 |                  Site Type                 |  Used | Fixed | Prohibited | Available | Util% |
 +--------------------------------------------+-------+-------+------------+-----------+-------+
-| CLB                                        |  4254 |     0 |          0 |      9720 | 43.77 |
-|   CLBL                                     |  2203 |     0 |            |           |       |
-|   CLBM                                     |  2051 |     0 |            |           |       |
-| LUT as Logic                               | 16638 |     0 |          0 |     77760 | 21.40 |
-|   using O5 output only                     |   419 |       |            |           |       |
-|   using O6 output only                     | 12087 |       |            |           |       |
-|   using O5 and O6                          |  4132 |       |            |           |       |
+| CLB                                        |  4173 |     0 |          0 |      9720 | 42.93 |
+|   CLBL                                     |  2076 |     0 |            |           |       |
+|   CLBM                                     |  2097 |     0 |            |           |       |
+| LUT as Logic                               | 16651 |     0 |          0 |     77760 | 21.41 |
+|   using O5 output only                     |   425 |       |            |           |       |
+|   using O6 output only                     | 12117 |       |            |           |       |
+|   using O5 and O6                          |  4109 |       |            |           |       |
 | LUT as Memory                              |  3114 |     0 |          0 |     40320 |  7.72 |
 |   LUT as Distributed RAM                   |   556 |     0 |            |           |       |
 |     using O5 output only                   |     0 |       |            |           |       |
@@ -92,11 +92,11 @@ Table of Contents
 |     using O6 output only                   |   463 |       |            |           |       |
 |     using O5 and O6                        |  2095 |       |            |           |       |
 | CLB Registers                              | 27012 |     0 |          0 |    155520 | 17.37 |
-|   Register driven from within the CLB      | 13052 |       |            |           |       |
-|   Register driven from outside the CLB     | 13960 |       |            |           |       |
-|     LUT in front of the register is unused | 10164 |       |            |           |       |
-|     LUT in front of the register is used   |  3796 |       |            |           |       |
-| Unique Control Sets                        |  1067 |       |          0 |     19440 |  5.49 |
+|   Register driven from within the CLB      | 13186 |       |            |           |       |
+|   Register driven from outside the CLB     | 13826 |       |            |           |       |
+|     LUT in front of the register is unused |  9899 |       |            |           |       |
+|     LUT in front of the register is used   |  3927 |       |            |           |       |
+| Unique Control Sets                        |  1062 |       |          0 |     19440 |  5.46 |
 +--------------------------------------------+-------+-------+------------+-----------+-------+
 * * Note: Available Control Sets calculated as Slices * 2, Review the Control Sets Report for more information regarding control sets.
 
@@ -163,17 +163,16 @@ Table of Contents
 6. CLOCK
 --------
 
-+----------------------+------+-------+------------+-----------+-------+
-|       Site Type      | Used | Fixed | Prohibited | Available | Util% |
-+----------------------+------+-------+------------+-----------+-------+
-| GLOBAL CLOCK BUFFERs |    5 |     0 |          0 |       192 |  2.60 |
-|   BUFGCE             |    5 |     0 |          0 |        84 |  5.95 |
-|   BUFGCE_DIV         |    0 |     0 |          0 |        12 |  0.00 |
-|   BUFG_GT            |    0 |     0 |          0 |        72 |  0.00 |
-|   BUFGCTRL*          |    0 |     0 |          0 |        24 |  0.00 |
-| PLL                  |    1 |     0 |          0 |         6 | 16.67 |
-| MMCM                 |    1 |     1 |          0 |         3 | 33.33 |
-+----------------------+------+-------+------------+-----------+-------+
++------------+------+-------+------------+-----------+-------+
+|  Site Type | Used | Fixed | Prohibited | Available | Util% |
++------------+------+-------+------------+-----------+-------+
+| BUFGCE     |    5 |     0 |          0 |        84 |  5.95 |
+| BUFGCE_DIV |    0 |     0 |          0 |        12 |  0.00 |
+| BUFG_GT    |    0 |     0 |          0 |        72 |  0.00 |
+| BUFGCTRL*  |    0 |     0 |          0 |        24 |  0.00 |
+| PLL        |    1 |     0 |          0 |         6 | 16.67 |
+| MMCM       |    1 |     1 |          0 |         3 | 33.33 |
++------------+------+-------+------------+-----------+-------+
 * Note: Each used BUFGCTRL counts as two GLOBAL CLOCK BUFFERs. This table does not include global clocking resources, only buffer cell usage. See the Clock Utilization Report (report_clock_utilization) for detailed accounting of global clocking resource availability.
 
 
@@ -215,13 +214,13 @@ Table of Contents
 |     Ref Name     |  Used | Functional Category |
 +------------------+-------+---------------------+
 | FDRE             | 26174 |            Register |
-| LUT6             |  8152 |                 CLB |
+| LUT6             |  8141 |                 CLB |
 | LUT3             |  3855 |                 CLB |
-| LUT4             |  3812 |                 CLB |
-| LUT5             |  2766 |                 CLB |
+| LUT4             |  3810 |                 CLB |
+| LUT5             |  2767 |                 CLB |
 | SRL16E           |  2498 |                 CLB |
 | SRLC32E          |  2151 |                 CLB |
-| LUT2             |  1735 |                 CLB |
+| LUT2             |  1737 |                 CLB |
 | MUXF7            |   516 |                 CLB |
 | RAMD32           |   510 |                 CLB |
 | FDSE             |   496 |            Register |
